@@ -21,6 +21,8 @@ import bluetooth.Bluetooth;
 import javax.swing.JScrollPane;
 
 public class HlavneOkno {
+	
+	// pokus
 
 	private Bluetooth bluetooth = Bluetooth.priprav();
 	private JFrame frmOvladacRobota;
