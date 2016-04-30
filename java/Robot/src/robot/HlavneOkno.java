@@ -19,6 +19,9 @@ import javax.swing.ListModel;
 
 import bluetooth.Bluetooth;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class HlavneOkno {
 	
@@ -32,6 +35,10 @@ public class HlavneOkno {
 	private JScrollPane scrollPane;
 	private JCheckBox chckbxZastavRolovanie;
 	private JCheckBox chckbxZastavPrimanie;
+	private JSlider sliderCitlivostLightAssist;
+	private JCheckBox chckbxStretvacieSvetl;
+	private JCheckBox chckbxialkovSvetl;
+	private JCheckBox chckbxLightAssist;
 
 	/**
 	 * Launch the application.
@@ -231,6 +238,7 @@ public class HlavneOkno {
 	    group3.add(rdbtnAcof);
 	    
 	    final JCheckBox chckbxUltzSenzor = new JCheckBox("ultrazvukov\u00FD senzor");
+	    chckbxUltzSenzor.setSelected(true);
 	    chckbxUltzSenzor.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (chckbxUltzSenzor.isSelected()) {
@@ -332,10 +340,69 @@ public class HlavneOkno {
 	    group2.add(rdbtnMS);
 	    group2.add(rdbtnVS);
 	    group2.add(rdbtnRS);
+	    
+	    chckbxStretvacieSvetl = new JCheckBox("stret\u00E1vacie svetl\u00E1");
+	    chckbxStretvacieSvetl.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (chckbxStretvacieSvetl.isSelected()) {
+	    			bluetooth.posli("S");
+	    			chckbxLightAssist.setSelected(false);
+	    		} else {
+	    			bluetooth.posli("T");
+	    		}
+	    	}
+	    });
+	    chckbxStretvacieSvetl.setBounds(726, 261, 135, 50);
+	    frmOvladacRobota.getContentPane().add(chckbxStretvacieSvetl);
+	    
+	    chckbxialkovSvetl = new JCheckBox("dia\u013Ekov\u00E9 svetl\u00E1");
+	    chckbxialkovSvetl.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+		    		if (chckbxialkovSvetl.isSelected()) {
+		    			bluetooth.posli("U");
+		    			chckbxStretvacieSvetl.setSelected(true);
+		    			chckbxLightAssist.setSelected(false);
+		    		} else {
+		    			bluetooth.posli("V");
+		    		}
+	    	}
+	    });
+	    chckbxialkovSvetl.setBounds(863, 261, 120, 50);
+	    frmOvladacRobota.getContentPane().add(chckbxialkovSvetl);
+	    
+	    chckbxLightAssist = new JCheckBox("Light assist");
+	    chckbxLightAssist.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (chckbxLightAssist.isSelected()) {
+	    			posliLightAssist();
+	    			chckbxStretvacieSvetl.setSelected(false);
+	    			chckbxialkovSvetl.setSelected(false);
+	    		} else {
+	    			bluetooth.posli("X");
+	    		}
+	    	}
+	    });
+	    chckbxLightAssist.setBounds(637, 261, 87, 50);
+	    frmOvladacRobota.getContentPane().add(chckbxLightAssist);
+	    
+	    sliderCitlivostLightAssist = new JSlider();
+	    sliderCitlivostLightAssist.addChangeListener(new ChangeListener() {
+	    	public void stateChanged(ChangeEvent e) {
+	    		if (chckbxLightAssist.isSelected()) {
+	    			posliLightAssist();
+	    		}
+	    	}
+	    });
+	    sliderCitlivostLightAssist.setMinimum(0);
+	    sliderCitlivostLightAssist.setMaximum(9);
+	    sliderCitlivostLightAssist.setBounds(619, 308, 147, 31);
+	    frmOvladacRobota.getContentPane().add(sliderCitlivostLightAssist);
 	}
 	
-	 
-	    
+	private void posliLightAssist() {
+		char citlivost = (char) ('0' + sliderCitlivostLightAssist.getValue()); 
+		bluetooth.posli("W" + Character.valueOf(citlivost));
+	}
 
 	public void prisielRiadok(String riadok) {
 		String x = null;
