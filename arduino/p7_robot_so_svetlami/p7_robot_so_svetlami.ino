@@ -127,19 +127,19 @@ void prikazZTabletu(){
       Serial.println("nastaveny tempomat \"rychlo\"");
       break;
     case 'J': rychlostA(150); rychlostB(150); ktoraRychlost = 5;
-      Serial.println("nastaveny tempomat \"stredne\"");
+      Serial.println("nastaveny tempomat \"stredne rychlo\"");
       break;
     case 'K': rychlostA(100); rychlostB(100); ktoraRychlost = 7;
       Serial.println("nastaveny tempomat \"pomaly\"");
       break;
     case 'O': rychlostA(225); rychlostB(225); ktoraRychlost = 2; 
-      Serial.println("nastaveny tempomat \"stredne rychlo\"");
+      Serial.println("nastaveny tempomat \"velmi rychlo\"");
       break;
     case 'P': rychlostA(175); rychlostB(175); ktoraRychlost = 4; 
-      Serial.println("nastaveny tempomat \"viac stredne\"");
+      Serial.println("nastaveny tempomat \"viac nez stredne rychlo\"");
       break;
     case 'Q': rychlostA(125); rychlostB(125); ktoraRychlost = 6; 
-      Serial.println("nastaveny tempomat \"menej stredne\"");
+      Serial.println("nastaveny tempomat \"menej nez stredne rychlo\"");
       break;
     case 'R': rychlostA(75); rychlostB(75); ktoraRychlost = 8; 
       Serial.println("nastaveny tempomat \"najpomalsie\"");
@@ -317,14 +317,14 @@ void otacajSaKymJePrekazka(){
   dopredu();
 }
 
-void zistiVzdialenost(){
+void zistiVzdialenost() {
   digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(2);
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
   duration = pulseIn(ECHO_PIN, HIGH, 25000);
-  distance = (duration/2) / 29.1;// distance = (duration * 17) / 1000;
+  distance = (duration/2) * 0.034;
   Serial.print("Vzdialenost = ");
   Serial.print(distance);
   Serial.println(" cm");
