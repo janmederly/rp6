@@ -22,7 +22,6 @@ const int SPIATOCKA = 49;
 const int SILA_DENNYCH_SVETIEL = 20;
 const int FOTOREZISTOR = A3;
 
-
 void setup() {
   Serial.begin (9600);
   pinMode(TRIG_PIN, OUTPUT);
