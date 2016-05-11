@@ -48,12 +48,20 @@ void setup() {
   svetla();
 }
 
+const int DOPREDU = 1;
+const int DOZADU = 2;
+const int DOPRAVA = 3;
+const int DOLAVA = 4;
+const int STAT = 0;
+
 long citlivostL = 0; 
 boolean jeZapnutyL = false;
 long vbs = 0;
-boolean dopreduSmer = 0;
+int smer = STAT;
 boolean zapnutyAsistentNarazu = 1;
 int jeZapnutyACC = 0;
+int ktoraRychlost = 0;
+long distance;
 
 void loop(){
   prikazZTabletu();
@@ -67,7 +75,29 @@ void loop(){
     digitalWrite(P_BRZDNE, LOW);
     digitalWrite(L_BRZDNE, LOW);
   }
+  diagnostika();
   delay (200);
+}
+
+void diagnostika() {
+  Serial.print("[");
+  Serial.print("D=");
+  Serial.print(distance);
+  Serial.print(" T=");
+  Serial.print(ktoraRychlost);  
+  Serial.print(" S=");
+  Serial.print(smer);
+  Serial.print(" L");
+  Serial.print(jeZapnutyL);
+  Serial.print(",");
+  Serial.print(citlivostL);
+  Serial.print(" AN=");
+  Serial.print(zapnutyAsistentNarazu);  
+  Serial.print(" O=");
+  Serial.print(jeZapnutyACC);  
+  
+  //[D=34 T1 S1 L+8 N+ OP]
+  Serial.println("]");
 }
 
 void lightAssist() {
@@ -89,70 +119,97 @@ void lightAssist() {
   }
 }
 
-int ktoraRychlost = 0;
-
 void prikazZTabletu(){
   int znak = 0;
   if(Serial.available()>0) {znak = Serial.read();}
   switch (znak) {
     case 'A': dopredu();
       Serial.println(" idem dopredu"); 
-      dopreduSmer = 1;
+      smer = DOPREDU;
       break;
     case 'C': doprava();
       Serial.println(" idem doprava"); 
-      dopreduSmer = 0;break;
+      smer = DOPRAVA;
+      break;
     case 'B': dolava();
       Serial.println(" idem dolava"); 
-      dopreduSmer = 0;break;
+      smer = DOLAVA;
+      break;
     case 'D': dozadu();
       Serial.println(" idem dozadu"); 
-      dopreduSmer = 0;
+      smer = DOZADU;
       break;
     case 'E': zastav();
       Serial.println(" zastavam...");
-       dopreduSmer = 0;
-       break;
+      smer = STAT;
+      break;
     case 'F': zapnutyAsistentNarazu = true;
       Serial.println("asistent narazu zapnuty");
       break;
     case 'G': zapnutyAsistentNarazu = false;
       Serial.println("asistent narazu vypnuty");
       break;
-    case 'H': rychlostA(255); rychlostB(255); ktoraRychlost = 1; 
+    case 'H': ktoraRychlost = 1;
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
       Serial.println("nastaveny tempomat \"najrychlejsie\"");
       break;
-    case 'I': rychlostA(200); rychlostB(200); ktoraRychlost = 3;
-      Serial.println("nastaveny tempomat \"rychlo\"");
-      break;
-    case 'J': rychlostA(150); rychlostB(150); ktoraRychlost = 5;
-      Serial.println("nastaveny tempomat \"stredne rychlo\"");
-      break;
-    case 'K': rychlostA(100); rychlostB(100); ktoraRychlost = 7;
-      Serial.println("nastaveny tempomat \"pomaly\"");
-      break;
-    case 'O': rychlostA(225); rychlostB(225); ktoraRychlost = 2; 
+    case 'I': ktoraRychlost = 2;
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
       Serial.println("nastaveny tempomat \"velmi rychlo\"");
       break;
-    case 'P': rychlostA(175); rychlostB(175); ktoraRychlost = 4; 
-      Serial.println("nastaveny tempomat \"viac nez stredne rychlo\"");
+    case 'J': ktoraRychlost = 3;
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
+      Serial.println("nastaveny tempomat \"rychlo\"");
       break;
-    case 'Q': rychlostA(125); rychlostB(125); ktoraRychlost = 6; 
-      Serial.println("nastaveny tempomat \"menej nez stredne rychlo\"");
+    case 'K': ktoraRychlost = 4;
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
+      Serial.println("nastaveny tempomat \"viac nez stredne\"");
       break;
-    case 'R': rychlostA(75); rychlostB(75); ktoraRychlost = 8; 
+    case 'L': ktoraRychlost = 5; 
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
+      Serial.println("nastaveny tempomat \"stredne\"");
+      break;
+    case 'M': ktoraRychlost = 6; 
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
+      Serial.println("nastaveny tempomat \"menej nez stredne\"");
+      break;
+    case 'N': ktoraRychlost = 7; 
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
+      Serial.println("nastaveny tempomat \"pomaly\"");
+      break;
+    case 'O': ktoraRychlost = 8; 
+      if (smer != STAT) {
+        nastavRychlostMotorov(0);
+      }
       Serial.println("nastaveny tempomat \"najpomalsie\"");
       break;
-    case 'L': jeZapnutyACC = 1;
-      Serial.println("nastaveny ACCtempomat doprava ");
+    case 'Q': 
+      jeZapnutyACC = DOPRAVA;
+      Serial.println("nastavene vyhybanie sa prekazkam doprava");
       break;
-    case 'M': jeZapnutyACC = 2;
-      Serial.println("nastaveny ACCtempomat dolava ");
+    case 'P':
+      jeZapnutyACC = DOLAVA;
+      Serial.println("nastavene vyhybanie sa prekazkam dolava");
       break;
-    case 'N': jeZapnutyACC = 0;
-      Serial.println("vypnuty acc ");
+    case 'R': jeZapnutyACC = 0;
+      Serial.println("vypnute vyhybanie sa prekazkam");
       break;
-    case 'S': analogWrite(L_STRETAVACIE, 255);
+    case 'S': 
+      analogWrite(L_STRETAVACIE, 255);
       analogWrite(P_STRETAVACIE, 255);
       jeZapnutyL = false;
       break;
@@ -190,27 +247,26 @@ void prikazZTabletu(){
   }
 }
 
-long duration, distance;
-
 void testVzdialenost() {
   zistiVzdialenost();
   if (distance >= 400 || distance <= 0) {
     Serial.println ("ste pridaleko alebo priblizko k prekazke");
   } else if (distance < 50) { 
     Serial.print(distance);
-    if (jeZapnutyACC == 1) {
+    if (jeZapnutyACC == DOPRAVA && smer == DOPREDU) {
       otacajSaKymJePrekazkaDoprava();
-    }else if (jeZapnutyACC == 2){
+    } else if (jeZapnutyACC == DOLAVA && smer == DOPREDU) {
       otacajSaKymJePrekazkaDolava();
-    }else{
-      Serial.println(" cm POZOR PREKAZKA BLIZSIE AKO 50CM BRZDIT ALEBO ZMENIT SMER ");
-      if (distance < 25 && dopreduSmer) {
+    } else {
+      Serial.println(" cm POZOR PREKAZKA BLIZSIE AKO 50 CM BRZDIT ALEBO ZMENIT SMER ");
+      if (distance < 25 && smer == DOPREDU) {
          zastav();
       }
     }
   }
 } 
- void svetla(){
+
+void svetla() {
    digitalWrite(P_ZADNE, HIGH);
    digitalWrite(L_ZADNE, HIGH);
    digitalWrite(P_DIALKOVE, LOW);
@@ -225,10 +281,11 @@ void testVzdialenost() {
    analogWrite(L_STRETAVACIE, SILA_DENNYCH_SVETIEL);
    analogWrite(P_STRETAVACIE, SILA_DENNYCH_SVETIEL); 
  }
+ 
  void dopredu() {
   smerA(1);
   smerB(1);
-  akaRychlost(255);
+  nastavRychlostMotorov(255);
   digitalWrite(PP_SMEROVKA, LOW);
   digitalWrite(PL_SMEROVKA, LOW);
   digitalWrite(ZP_SMEROVKA, LOW);
@@ -240,7 +297,7 @@ void testVzdialenost() {
 void dozadu() {
   smerA(0);
   smerB(0);
-  akaRychlost(255);
+  nastavRychlostMotorov(255);
   digitalWrite(SPIATOCKA, HIGH);
   digitalWrite(PP_SMEROVKA, LOW);
   digitalWrite(PL_SMEROVKA, LOW);
@@ -252,7 +309,7 @@ void dozadu() {
 void doprava() {
   smerA(1);
   smerB(0);
-  akaRychlost(150);
+  nastavRychlostMotorov(150);
   digitalWrite(PP_SMEROVKA, HIGH);
   digitalWrite(ZP_SMEROVKA, HIGH);
   digitalWrite(PL_SMEROVKA, LOW);
@@ -264,7 +321,7 @@ void doprava() {
 void dolava() {
   smerA(0);
   smerB(1);
-  akaRychlost(150);
+  nastavRychlostMotorov(150);
   digitalWrite(PL_SMEROVKA, HIGH);
   digitalWrite(ZL_SMEROVKA, HIGH);
   digitalWrite(PP_SMEROVKA, LOW);
@@ -274,14 +331,7 @@ void dolava() {
   digitalWrite(SPIATOCKA, LOW);
 }
 
-/*
- * Co robi:
- * nastavy rychlost motorov
- * 
- * Vstupy:
- * rychlostBezTempomatu je cislo oznacujuce rychlost bez tempomatu  
- */
-void akaRychlost(int rychlostBezTempomatu){
+void nastavRychlostMotorov(int rychlostBezTempomatu) {
   switch (ktoraRychlost) {
     case 1: rychlostA(255); rychlostB(255); break;
     case 2: rychlostA(225); rychlostB(225); break;
@@ -322,11 +372,8 @@ void zistiVzdialenost() {
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
-  duration = pulseIn(ECHO_PIN, HIGH, 25000);
+  long duration = pulseIn(ECHO_PIN, HIGH, 25000);
   distance = (duration/2) * 0.034;
-  Serial.print("Vzdialenost = ");
-  Serial.print(distance);
-  Serial.println(" cm");
 }
 
 void zastav() {
@@ -340,6 +387,7 @@ void zastav() {
   digitalWrite(P_BRZDNE, HIGH);
   digitalWrite(L_BRZDNE, HIGH);
   vbs = millis() + 1500;
+  smer = STAT;
 }
 
 void smerA(int vpred) {      // vpred = 1 ak chces ist dopredu, vpred = 0 ak chces ist dozadu

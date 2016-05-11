@@ -30,19 +30,17 @@ public class HlavneOkno {
 	private Bluetooth bluetooth = Bluetooth.priprav();
 	private JFrame frmOvladacRobota;
 	private JTextField textVzdialenost;
-	private DefaultListModel listModel;
-	private JList list;
-	private JScrollPane scrollPane;
+	private DefaultListModel listModelSpravy;
+	private JList listSpravy;
+	private JScrollPane scrollPaneSpravy;
 	private JCheckBox chckbxZastavRolovanie;
 	private JCheckBox chckbxZastavPrimanie;
 	private JSlider sliderCitlivostLightAssist;
-	private JCheckBox chckbxStretvacieSvetl;
-	private JCheckBox chckbxialkovSvetl;
+	private JCheckBox chckbxStretavacieSvetla;
+	private JCheckBox chckbxDialkoveSvetla;
 	private JCheckBox chckbxLightAssist;
+	private JCheckBox chckbxDiagnostickeVypisy;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -56,16 +54,14 @@ public class HlavneOkno {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public HlavneOkno() {
 		initialize();
+		Zobrazovac zobrazovac = new Zobrazovac(bluetooth, this);
+	    Thread thread = new Thread(zobrazovac);
+	    thread.setDaemon(true);
+	    thread.start();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		frmOvladacRobota = new JFrame();
 		frmOvladacRobota.setTitle("Ovl\u00E1da\u010D robota");
@@ -135,69 +131,119 @@ public class HlavneOkno {
 		frmOvladacRobota.getContentPane().add(textVzdialenost);
 		textVzdialenost.setColumns(10);
 		
-		JLabel lblVzdialenosOdPrekky = new JLabel("Vzdialenos\u0165 od prek\u00E1\u017Eky:");
-		lblVzdialenosOdPrekky.setBounds(10, 430, 165, 21);
-		frmOvladacRobota.getContentPane().add(lblVzdialenosOdPrekky);
+		JLabel lblVzdialenostOdPrekazky = new JLabel("Vzdialenos\u0165 od prek\u00E1\u017Eky:");
+		lblVzdialenostOdPrekazky.setBounds(10, 430, 165, 21);
+		frmOvladacRobota.getContentPane().add(lblVzdialenostOdPrekazky);
 	    
-	    final JRadioButton rdbtnNr = new JRadioButton("najr\u00FDchlej\u0161ie");
-	    rdbtnNr.addActionListener(new ActionListener() {
+	    final JRadioButton rdbtnR1 = new JRadioButton("najr\u00FDchlej\u0161ie");
+	    rdbtnR1.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnNr.isSelected()) {
+	    		if (rdbtnR1.isSelected()) {
 	    			bluetooth.posli("H");
-	    			} else {
 	    		}
 	    	}
 	    });
-	    rdbtnNr.setToolTipText("zapnut rychlost \"najrychlejsie\"");
-	    rdbtnNr.setBounds(10, 257, 107, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnNr);
+	    rdbtnR1.setToolTipText("zapnut rychlost \"najrychlejsie\"");
+	    rdbtnR1.setBounds(10, 257, 107, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR1);
 	    
-	    final JRadioButton rdbtnR = new JRadioButton("ve\u013Emi r\u00FDchlo");
-	    rdbtnR.addActionListener(new ActionListener() {
+	    final JRadioButton rdbtnR2 = new JRadioButton("ve\u013Emi r\u00FDchlo");
+	    rdbtnR2.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnR.isSelected()) {
+	    		if (rdbtnR2.isSelected()) {
 	    			bluetooth.posli("I");
 	    			} else {
 	    		}
 	    	}
 	    });
-	    rdbtnR.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"ve\u013Emi r\u00FDchlo\"");
-	    rdbtnR.setBounds(119, 257, 140, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnR);
+	    rdbtnR2.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"ve\u013Emi r\u00FDchlo\"");
+	    rdbtnR2.setBounds(119, 257, 140, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR2);
 	    
-	    final JRadioButton rdbtnS = new JRadioButton("stredne");
-	    rdbtnS.addActionListener(new ActionListener() {
+	    final JRadioButton rdbtnR3 = new JRadioButton("r\u00FDchlo");
+	    rdbtnR3.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnS.isSelected()) {
+	    		if (rdbtnR3.isSelected()) {
 	    			bluetooth.posli("J");
 	    			} else {
 	    		}
+	    		
 	    	}
 	    });
-	    rdbtnS.setToolTipText("zapnut rychlost \"stredne\"");
-	    rdbtnS.setBounds(10, 285, 72, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnS);
+	    rdbtnR3.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"r\u00FDchlo\"");
+	    rdbtnR3.setBounds(261, 257, 87, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR3);
 	    
-	    final JRadioButton rdbtnP = new JRadioButton("menej ne\u017E stredne");
-	    rdbtnP.addActionListener(new ActionListener() {
+	    final JRadioButton rdbtnR4 = new JRadioButton("viac ne\u017E stredne");
+	    rdbtnR4.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnP.isSelected()) {
+	    		if (rdbtnR4.isSelected()) {
 	    			bluetooth.posli("K");
 	    			} else {
 	    		}
 	    	}
 	    });
-	    rdbtnP.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"menej ne\u017E stredne\"");
-	    rdbtnP.setBounds(119, 285, 140, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnP);
+	    rdbtnR4.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"viac ne\u017E stredne r\u00FDchlo\"");
+	    rdbtnR4.setBounds(359, 257, 147, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR4);
 	    
-	   
+	    final JRadioButton rdbtnR5 = new JRadioButton("stredne");
+	    rdbtnR5.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (rdbtnR5.isSelected()) {
+	    			bluetooth.posli("L");
+	    			} else {
+	    		}
+	    	}
+	    });
+	    rdbtnR5.setToolTipText("zapnut rychlost \"stredne\"");
+	    rdbtnR5.setBounds(10, 285, 72, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR5);
+	    
+	    final JRadioButton rdbtnR6 = new JRadioButton("menej ne\u017E stredne");
+	    rdbtnR6.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (rdbtnR6.isSelected()) {
+	    			bluetooth.posli("M");
+	    			} else {
+	    		}
+	    	}
+	    });
+	    rdbtnR6.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"menej ne\u017E stredne\"");
+	    rdbtnR6.setBounds(119, 285, 140, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR6);
+	    
+	    final JRadioButton rdbtnR7 = new JRadioButton("pomaly");
+	    rdbtnR7.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (rdbtnR7.isSelected()) {
+	    			bluetooth.posli("N");
+	    			} else {
+	    		}
+	    	}
+	    });
+	    rdbtnR7.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"pomaly\"");
+	    rdbtnR7.setBounds(261, 285, 87, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR7);
+	    
+	    final JRadioButton rdbtnR8 = new JRadioButton("najpomal\u0161ie");
+	    rdbtnR8.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (rdbtnR8.isSelected()) {
+	    			bluetooth.posli("O");
+	    			} else {
+	    		}
+	    	}
+	    });
+	    rdbtnR8.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"najpomal\u0161ie\"");
+	    rdbtnR8.setBounds(359, 285, 147, 37);
+	    frmOvladacRobota.getContentPane().add(rdbtnR8);
 	    
 	    final JRadioButton rdbtnAcp = new JRadioButton("Vyh\u00FDbanie sa prek\u00E1\u017Ekam doprava");
 	    rdbtnAcp.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnAcp.isSelected()) {
-	    			bluetooth.posli("M");
+	    			bluetooth.posli("P");
 	    			} else {
 	    		}
 	    	}
@@ -210,7 +256,7 @@ public class HlavneOkno {
 	    rdbtnAcl.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnAcl.isSelected()) {
-	    			bluetooth.posli("L");
+	    			bluetooth.posli("Q");
 	    			} else {
 	    		}
 	    	}
@@ -223,7 +269,7 @@ public class HlavneOkno {
 	    rdbtnAcof.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnAcof.isSelected()) {
-	    			bluetooth.posli("N");
+	    			bluetooth.posli("R");
 	    			} else {
 	    		}
 	    	}
@@ -251,14 +297,14 @@ public class HlavneOkno {
 	    chckbxUltzSenzor.setBounds(10, 231, 165, 23);
 	    frmOvladacRobota.getContentPane().add(chckbxUltzSenzor);
 	    
-	    scrollPane = new JScrollPane();
-	    scrollPane.setBounds(10, 10, 973, 214);
+	    scrollPaneSpravy = new JScrollPane();
+	    scrollPaneSpravy.setBounds(10, 10, 973, 214);
 	    
-	    frmOvladacRobota.getContentPane().add(scrollPane);
+	    frmOvladacRobota.getContentPane().add(scrollPaneSpravy);
 
-	    listModel = new DefaultListModel();
-	    list = new JList(listModel);
-	    scrollPane.setViewportView(list);
+	    listModelSpravy = new DefaultListModel();
+	    listSpravy = new JList(listModelSpravy);
+	    scrollPaneSpravy.setViewportView(listSpravy);
 	    
 	    chckbxZastavRolovanie = new JCheckBox("zastav rolovanie");
 	    chckbxZastavRolovanie.setBounds(863, 231, 120, 23);
@@ -268,83 +314,27 @@ public class HlavneOkno {
 	    chckbxZastavPrimanie.setBounds(710, 231, 135, 23);
 	    frmOvladacRobota.getContentPane().add(chckbxZastavPrimanie);
 	    
-	    final JRadioButton rdbtnRS = new JRadioButton("r\u00FDchlo");
-	    rdbtnRS.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnRS.isSelected()) {
-	    			bluetooth.posli("O");
-	    			} else {
-	    		}
-	    		
-	    	}
-	    });
 	    
 	   
+	    
+	    
+	    
 	   
-	    rdbtnRS.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"r\u00FDchlo\"");
-	    rdbtnRS.setBounds(261, 257, 87, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnRS);
-	    
-	    final JRadioButton rdbtnVS = new JRadioButton("pomaly");
-	    rdbtnVS.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnVS.isSelected()) {
-	    			bluetooth.posli("P");
-	    			} else {
-	    		}
-	    	}
-	    });
-	    rdbtnVS.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"pomaly\"");
-	    rdbtnVS.setBounds(261, 285, 87, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnVS);
-	    
-	    final JRadioButton rdbtnMS = new JRadioButton("viac ne\u017E stredne");
-	    rdbtnMS.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnMS.isSelected()) {
-	    			bluetooth.posli("Q");
-	    			} else {
-	    		}
-	    	}
-	    });
-	    rdbtnMS.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"viac ne\u017E stredne r\u00FDchlo\"");
-	    rdbtnMS.setBounds(359, 257, 147, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnMS);
-	    
-	    JRadioButton rdbtnNp = new JRadioButton("najpomal\u0161ie");
-	    rdbtnNp.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent e) {
-	    		if (rdbtnRS.isSelected()) {
-	    			bluetooth.posli("R");
-	    			} else {
-	    		}
-	    	}
-	    });
-	    rdbtnNp.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"najpomal\u0161ie\"");
-	    rdbtnNp.setBounds(359, 285, 147, 37);
-	    frmOvladacRobota.getContentPane().add(rdbtnNp);
-	    
-	    
-	    
-	    Zobrazovac zobrazovac = new Zobrazovac(bluetooth, this);
-	    Thread thread = new Thread(zobrazovac);
-	    thread.setDaemon(true);
-	    thread.start();
 	    
 	    ButtonGroup group2 = new ButtonGroup();
-	    group2.add(rdbtnNr);
-	    group2.add(rdbtnR);
-	    group2.add(rdbtnS);
-	    group2.add(rdbtnP);
-	    group2.add(rdbtnNp);
-	    group2.add(rdbtnMS);
-	    group2.add(rdbtnVS);
-	    group2.add(rdbtnRS);
+	    group2.add(rdbtnR1);
+	    group2.add(rdbtnR2);
+	    group2.add(rdbtnR5);
+	    group2.add(rdbtnR6);
+	    group2.add(rdbtnR8);
+	    group2.add(rdbtnR4);
+	    group2.add(rdbtnR7);
+	    group2.add(rdbtnR3);
 	    
-	    chckbxStretvacieSvetl = new JCheckBox("stret\u00E1vacie svetl\u00E1");
-	    chckbxStretvacieSvetl.addActionListener(new ActionListener() {
+	    chckbxStretavacieSvetla = new JCheckBox("stret\u00E1vacie svetl\u00E1");
+	    chckbxStretavacieSvetla.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		if (chckbxStretvacieSvetl.isSelected()) {
+	    		if (chckbxStretavacieSvetla.isSelected()) {
 	    			bluetooth.posli("S");
 	    			chckbxLightAssist.setSelected(false);
 	    		} else {
@@ -352,37 +342,37 @@ public class HlavneOkno {
 	    		}
 	    	}
 	    });
-	    chckbxStretvacieSvetl.setBounds(710, 250, 135, 50);
-	    frmOvladacRobota.getContentPane().add(chckbxStretvacieSvetl);
+	    chckbxStretavacieSvetla.setBounds(710, 250, 135, 50);
+	    frmOvladacRobota.getContentPane().add(chckbxStretavacieSvetla);
 	    
-	    chckbxialkovSvetl = new JCheckBox("dia\u013Ekov\u00E9 svetl\u00E1");
-	    chckbxialkovSvetl.addActionListener(new ActionListener() {
+	    chckbxDialkoveSvetla = new JCheckBox("dia\u013Ekov\u00E9 svetl\u00E1");
+	    chckbxDialkoveSvetla.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-		    		if (chckbxialkovSvetl.isSelected()) {
+		    		if (chckbxDialkoveSvetla.isSelected()) {
 		    			bluetooth.posli("U");
-		    			chckbxStretvacieSvetl.setSelected(true);
+		    			chckbxStretavacieSvetla.setSelected(true);
 		    			chckbxLightAssist.setSelected(false);
 		    		} else {
 		    			bluetooth.posli("V");
 		    		}
 	    	}
 	    });
-	    chckbxialkovSvetl.setBounds(863, 250, 120, 50);
-	    frmOvladacRobota.getContentPane().add(chckbxialkovSvetl);
+	    chckbxDialkoveSvetla.setBounds(863, 250, 120, 50);
+	    frmOvladacRobota.getContentPane().add(chckbxDialkoveSvetla);
 	    
 	    chckbxLightAssist = new JCheckBox("Light assist");
 	    chckbxLightAssist.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (chckbxLightAssist.isSelected()) {
 	    			posliLightAssist();
-	    			chckbxStretvacieSvetl.setSelected(false);
-	    			chckbxialkovSvetl.setSelected(false);
+	    			chckbxStretavacieSvetla.setSelected(false);
+	    			chckbxDialkoveSvetla.setSelected(false);
 	    		} else {
 	    			bluetooth.posli("X");
 	    		}
 	    	}
 	    });
-	    chckbxLightAssist.setBounds(592, 250, 116, 50);
+	    chckbxLightAssist.setBounds(549, 250, 159, 50);
 	    frmOvladacRobota.getContentPane().add(chckbxLightAssist);
 	    
 	    sliderCitlivostLightAssist = new JSlider();
@@ -397,6 +387,11 @@ public class HlavneOkno {
 	    sliderCitlivostLightAssist.setMaximum(9);
 	    sliderCitlivostLightAssist.setBounds(561, 307, 147, 31);
 	    frmOvladacRobota.getContentPane().add(sliderCitlivostLightAssist);
+	    
+	    chckbxDiagnostickeVypisy = new JCheckBox("diagnostick\u00E9 v\u00FDpisy");
+	    chckbxDiagnostickeVypisy.setSelected(true);
+	    chckbxDiagnostickeVypisy.setBounds(549, 231, 140, 23);
+	    frmOvladacRobota.getContentPane().add(chckbxDiagnostickeVypisy);
 	}
 	
 	private void posliLightAssist() {
@@ -406,16 +401,20 @@ public class HlavneOkno {
 
 	public void prisielRiadok(String riadok) {
 		String x = null;
-		int i = riadok.indexOf("Vzdialenost = ");
+		int i = riadok.indexOf("[D=");
 		if (i >= 0) {
-			x = riadok.substring(13 + i);
-			textVzdialenost.setText(x);
+			int j = riadok.indexOf(" ");
+			if (j >= 0) {
+				x = riadok.substring(i+3, j);
+				textVzdialenost.setText(x + " cm");
+			}
 		}
 		
-		if (!chckbxZastavPrimanie.isSelected()) {
-			listModel.addElement(riadok);
+		if (!chckbxZastavPrimanie.isSelected() &&
+				(chckbxDiagnostickeVypisy.isSelected() || !riadok.startsWith("["))) {
+			listModelSpravy.addElement(riadok);
 			if (!chckbxZastavRolovanie.isSelected()) {
-				JScrollBar sb = scrollPane.getVerticalScrollBar();
+				JScrollBar sb = scrollPaneSpravy.getVerticalScrollBar();
 				sb.setValue(sb.getMaximum());
 			}
 		}
