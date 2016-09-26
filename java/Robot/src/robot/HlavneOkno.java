@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -14,14 +17,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
-import javax.swing.JTextField;
-import javax.swing.ListModel;
-
-import bluetooth.Bluetooth;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import bluetooth.Bluetooth;
+
 
 public class HlavneOkno {
 	
@@ -36,6 +39,8 @@ public class HlavneOkno {
 	private JCheckBox chckbxZastavRolovanie;
 	private JCheckBox chckbxZastavPrimanie;
 	private JSlider sliderCitlivostLightAssist;
+	private JSlider sliderKedyZastat;
+	private JSlider sliderRychlostMerania;
 	private JCheckBox chckbxStretavacieSvetla;
 	private JCheckBox chckbxDialkoveSvetla;
 	private JCheckBox chckbxLightAssist;
@@ -135,7 +140,7 @@ public class HlavneOkno {
 		lblVzdialenostOdPrekazky.setBounds(10, 430, 165, 21);
 		frmOvladacRobota.getContentPane().add(lblVzdialenostOdPrekazky);
 	    
-	    final JRadioButton rdbtnR1 = new JRadioButton("najr\u00FDchlej\u0161ie");
+	    final JRadioButton rdbtnR1 = new JRadioButton("najr\u00FDchlej\u0161ie - 2,76km/h");
 	    rdbtnR1.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR1.isSelected()) {
@@ -144,10 +149,10 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR1.setToolTipText("zapnut rychlost \"najrychlejsie\"");
-	    rdbtnR1.setBounds(10, 257, 107, 37);
+	    rdbtnR1.setBounds(10, 257, 150, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR1);
 	    
-	    final JRadioButton rdbtnR2 = new JRadioButton("ve\u013Emi r\u00FDchlo");
+	    final JRadioButton rdbtnR2 = new JRadioButton("ve\u013Emi r\u00FDchlo - 2,51km/h");
 	    rdbtnR2.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR2.isSelected()) {
@@ -157,10 +162,10 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR2.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"ve\u013Emi r\u00FDchlo\"");
-	    rdbtnR2.setBounds(119, 257, 140, 37);
+	    rdbtnR2.setBounds(162, 257, 140, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR2);
 	    
-	    final JRadioButton rdbtnR3 = new JRadioButton("r\u00FDchlo");
+	    final JRadioButton rdbtnR3 = new JRadioButton("r\u00FDchlo - 2,41km/h");
 	    rdbtnR3.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR3.isSelected()) {
@@ -171,10 +176,10 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR3.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"r\u00FDchlo\"");
-	    rdbtnR3.setBounds(261, 257, 87, 37);
+	    rdbtnR3.setBounds(304, 257, 119, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR3);
 	    
-	    final JRadioButton rdbtnR4 = new JRadioButton("viac ne\u017E stredne");
+	    final JRadioButton rdbtnR4 = new JRadioButton("viac ne\u017E stredne - 2,15km/h");
 	    rdbtnR4.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR4.isSelected()) {
@@ -184,10 +189,10 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR4.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"viac ne\u017E stredne r\u00FDchlo\"");
-	    rdbtnR4.setBounds(359, 257, 147, 37);
+	    rdbtnR4.setBounds(425, 257, 165, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR4);
 	    
-	    final JRadioButton rdbtnR5 = new JRadioButton("stredne");
+	    final JRadioButton rdbtnR5 = new JRadioButton("stredne - 1,97km/h");
 	    rdbtnR5.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR5.isSelected()) {
@@ -197,10 +202,10 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR5.setToolTipText("zapnut rychlost \"stredne\"");
-	    rdbtnR5.setBounds(10, 285, 72, 37);
+	    rdbtnR5.setBounds(10, 285, 126, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR5);
 	    
-	    final JRadioButton rdbtnR6 = new JRadioButton("menej ne\u017E stredne");
+	    final JRadioButton rdbtnR6 = new JRadioButton("menej ne\u017E stredne - 1,66km/h");
 	    rdbtnR6.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR6.isSelected()) {
@@ -210,10 +215,10 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR6.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"menej ne\u017E stredne\"");
-	    rdbtnR6.setBounds(119, 285, 140, 37);
+	    rdbtnR6.setBounds(138, 285, 182, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR6);
 	    
-	    final JRadioButton rdbtnR7 = new JRadioButton("pomaly");
+	    final JRadioButton rdbtnR7 = new JRadioButton("pomaly - 1,23km/h");
 	    rdbtnR7.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		if (rdbtnR7.isSelected()) {
@@ -223,7 +228,7 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR7.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"pomaly\"");
-	    rdbtnR7.setBounds(261, 285, 87, 37);
+	    rdbtnR7.setBounds(322, 285, 119, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR7);
 	    
 	    final JRadioButton rdbtnR8 = new JRadioButton("najpomal\u0161ie");
@@ -236,7 +241,7 @@ public class HlavneOkno {
 	    	}
 	    });
 	    rdbtnR8.setToolTipText("zapn\u00FA\u0165 r\u00FDchlos\u0165 \"najpomal\u0161ie\"");
-	    rdbtnR8.setBounds(359, 285, 147, 37);
+	    rdbtnR8.setBounds(443, 285, 147, 37);
 	    frmOvladacRobota.getContentPane().add(rdbtnR8);
 	    
 	    final JRadioButton rdbtnAcp = new JRadioButton("Vyh\u00FDbanie sa prek\u00E1\u017Ekam doprava");
@@ -307,11 +312,11 @@ public class HlavneOkno {
 	    scrollPaneSpravy.setViewportView(listSpravy);
 	    
 	    chckbxZastavRolovanie = new JCheckBox("zastav rolovanie");
-	    chckbxZastavRolovanie.setBounds(863, 231, 120, 23);
+	    chckbxZastavRolovanie.setBounds(871, 231, 112, 23);
 	    frmOvladacRobota.getContentPane().add(chckbxZastavRolovanie);
 	    
 	    chckbxZastavPrimanie = new JCheckBox("zastav prij\u00EDmanie");
-	    chckbxZastavPrimanie.setBounds(710, 231, 135, 23);
+	    chckbxZastavPrimanie.setBounds(734, 231, 135, 23);
 	    frmOvladacRobota.getContentPane().add(chckbxZastavPrimanie);
 	    
 	    
@@ -342,7 +347,7 @@ public class HlavneOkno {
 	    		}
 	    	}
 	    });
-	    chckbxStretavacieSvetla.setBounds(710, 250, 135, 50);
+	    chckbxStretavacieSvetla.setBounds(734, 250, 135, 50);
 	    frmOvladacRobota.getContentPane().add(chckbxStretavacieSvetla);
 	    
 	    chckbxDialkoveSvetla = new JCheckBox("dia\u013Ekov\u00E9 svetl\u00E1");
@@ -357,7 +362,7 @@ public class HlavneOkno {
 		    		}
 	    	}
 	    });
-	    chckbxDialkoveSvetla.setBounds(863, 250, 120, 50);
+	    chckbxDialkoveSvetla.setBounds(871, 250, 112, 50);
 	    frmOvladacRobota.getContentPane().add(chckbxDialkoveSvetla);
 	    
 	    chckbxLightAssist = new JCheckBox("Light assist");
@@ -372,7 +377,7 @@ public class HlavneOkno {
 	    		}
 	    	}
 	    });
-	    chckbxLightAssist.setBounds(549, 250, 159, 50);
+	    chckbxLightAssist.setBounds(592, 250, 140, 50);
 	    frmOvladacRobota.getContentPane().add(chckbxLightAssist);
 	    
 	    sliderCitlivostLightAssist = new JSlider();
@@ -385,18 +390,55 @@ public class HlavneOkno {
 	    });
 	    sliderCitlivostLightAssist.setMinimum(0);
 	    sliderCitlivostLightAssist.setMaximum(9);
-	    sliderCitlivostLightAssist.setBounds(561, 307, 147, 31);
+	    sliderCitlivostLightAssist.setBounds(563, 307, 147, 31);
 	    frmOvladacRobota.getContentPane().add(sliderCitlivostLightAssist);
 	    
 	    chckbxDiagnostickeVypisy = new JCheckBox("diagnostick\u00E9 v\u00FDpisy");
 	    chckbxDiagnostickeVypisy.setSelected(true);
-	    chckbxDiagnostickeVypisy.setBounds(549, 231, 140, 23);
+	    chckbxDiagnostickeVypisy.setBounds(592, 231, 140, 23);
 	    frmOvladacRobota.getContentPane().add(chckbxDiagnostickeVypisy);
+	    
+	    sliderKedyZastat = new JSlider();
+	    sliderKedyZastat.addChangeListener(new ChangeListener() {
+	    	public void stateChanged(ChangeEvent e) {
+	    		if (chckbxUltzSenzor.isSelected()) {
+	    			posliKedyZastat();
+	    		}
+	    	}
+	    });
+	    sliderKedyZastat.setValue(50);
+	    sliderKedyZastat.setToolTipText("kedy  brzdi\u0165");
+	    sliderKedyZastat.setMinimum(1);
+	    sliderKedyZastat.setMaximum(51);
+	    sliderKedyZastat.setBounds(155, 231, 147, 31);
+	    frmOvladacRobota.getContentPane().add(sliderKedyZastat);
+	    
+	    sliderRychlostMerania = new JSlider();
+	    sliderRychlostMerania.addChangeListener(new ChangeListener() {
+	    	public void stateChanged(ChangeEvent e) {
+	    		if (chckbxUltzSenzor.isSelected()) {
+	    			posliRychlostMerania();	    		}
+	    	}
+	    });
+	    sliderRychlostMerania.setValue(141);
+	    sliderRychlostMerania.setToolTipText("rychlost merania");
+	    sliderRychlostMerania.setMinimum(10);
+	    sliderRychlostMerania.setMaximum(33);
+	    sliderRychlostMerania.setBounds(336, 231, 147, 31);
+	    frmOvladacRobota.getContentPane().add(sliderRychlostMerania);
 	}
 	
 	private void posliLightAssist() {
 		char citlivost = (char) ('0' + sliderCitlivostLightAssist.getValue()); 
 		bluetooth.posli("W" + Character.valueOf(citlivost));
+	}
+	private void posliKedyZastat() {
+		char vzdialenost = (char) ('0' + sliderKedyZastat.getValue()); 
+		bluetooth.posli("Y" + Character.valueOf(vzdialenost));
+	}
+	private void posliRychlostMerania() {
+		char rychlostMerania = (char) ('0' + sliderRychlostMerania.getValue()); 
+		bluetooth.posli("Z" + Character.valueOf(rychlostMerania));
 	}
 
 	public void prisielRiadok(String riadok) {
@@ -408,7 +450,18 @@ public class HlavneOkno {
 				x = riadok.substring(i+3, j);
 				textVzdialenost.setText(x + " cm");
 			}
+			
+			        try {
+			            PrintWriter pw = new PrintWriter(new FileWriter("xyz.csv", true));
+		                pw.println(riadok);
+			            pw.close();
+			        } catch (IOException e) {
+			            System.out.println("Chyba: " + e);
+			        }
 		}
+			
+
+		
 		
 		if (!chckbxZastavPrimanie.isSelected() &&
 				(chckbxDiagnostickeVypisy.isSelected() || !riadok.startsWith("["))) {

@@ -62,8 +62,19 @@ boolean zapnutyAsistentNarazu = 1;
 int jeZapnutyACC = 0;
 int ktoraRychlost = 0;
 long distance;
+int kedyZastat = 5;
+int rychlostMerania = 10;
+unsigned long cas = 0;
+unsigned long cas2 = 0;
+unsigned long cas3 = 0;
+float casRN = 0;
+float casRS = 0;
+float distanceS = 0;
+float rychlost = 0;
+long vypocetRM = 0;
 
 void loop(){
+  cas = millis();
   prikazZTabletu();
   if (zapnutyAsistentNarazu) {
     testVzdialenost();
@@ -76,7 +87,18 @@ void loop(){
     digitalWrite(L_BRZDNE, LOW);
   }
   diagnostika();
-  delay (200);
+  cas2 = millis();
+  cas3 = cas2 - cas;
+  long cakat = (rychlostMerania * 6);
+  vypocetRM = cakat - cas3;
+  if (vypocetRM > 0) {
+     delay (vypocetRM);
+  
+  }else{
+    Serial.println(vypocetRM);
+    delay (60);
+  }
+ 
 }
 
 void diagnostika() {
@@ -94,9 +116,16 @@ void diagnostika() {
   Serial.print(" AN=");
   Serial.print(zapnutyAsistentNarazu);  
   Serial.print(" O=");
-  Serial.print(jeZapnutyACC);  
-  
-  //[D=34 T1 S1 L+8 N+ OP]
+  Serial.print(jeZapnutyACC);
+  Serial.print(" KZ=");
+  Serial.print(kedyZastat * 2);
+  Serial.print(" RM=");
+  Serial.print(rychlostMerania * 6);
+  Serial.print(" Rychlost=");
+  Serial.print(rychlost);
+  Serial.print("m/s");
+  Serial.print(" Cas=");
+  Serial.print(casRN);
   Serial.println("]");
 }
 
@@ -244,6 +273,30 @@ void prikazZTabletu(){
       analogWrite(L_STRETAVACIE, SILA_DENNYCH_SVETIEL);
       analogWrite(P_STRETAVACIE, SILA_DENNYCH_SVETIEL);
       break;
+    case 'Y': 
+      {
+        zapnutyAsistentNarazu = 1;
+        long cas2 = millis();
+        while(Serial.available() <= 0 && millis()-cas2 < 1000) {
+        }
+        if (Serial.available() > 0) {
+          int dalsi = Serial.read();
+          kedyZastat = (dalsi-'0'+1);
+        }
+      }
+      break;
+    case 'Z': 
+      {
+        zapnutyAsistentNarazu = 1;
+        long cas3 = millis();
+        while(Serial.available() <= 0 && millis()-cas3 < 1000) {
+        }
+        if (Serial.available() > 0) {
+          int dalsi = Serial.read();
+          rychlostMerania = (dalsi-'0'+1);
+        }
+      }
+      break;
   }
 }
 
@@ -251,6 +304,7 @@ void testVzdialenost() {
   zistiVzdialenost();
   if (distance >= 400 || distance <= 0) {
     Serial.println ("ste pridaleko alebo priblizko k prekazke");
+    rychlost = 0;
   } else if (distance < 50) { 
     Serial.print(distance);
     if (jeZapnutyACC == DOPRAVA && smer == DOPREDU) {
@@ -259,7 +313,7 @@ void testVzdialenost() {
       otacajSaKymJePrekazkaDolava();
     } else {
       Serial.println(" cm POZOR PREKAZKA BLIZSIE AKO 50 CM BRZDIT ALEBO ZMENIT SMER ");
-      if (distance < 25 && smer == DOPREDU) {
+      if (distance < kedyZastat * 2 && smer == DOPREDU) {
          zastav();
       }
     }
@@ -374,6 +428,14 @@ void zistiVzdialenost() {
   digitalWrite(TRIG_PIN, LOW);
   long duration = pulseIn(ECHO_PIN, HIGH, 25000);
   distance = (duration/2) * 0.034;
+  casRN = millis();
+  
+  float zmenaVzdialenosti = (float) (distanceS - distance) / (float) 100;
+  float zmenaCasu = (float) (casRN - casRS) / (float) 1000;
+  rychlost = zmenaVzdialenosti / zmenaCasu;
+  
+  distanceS = distance;
+  casRS = casRN;
 }
 
 void zastav() {
