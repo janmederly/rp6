@@ -30,7 +30,8 @@ public class Bluetooth {
 	}
 	
 	public static Bluetooth priprav() {
-		String url = "btspp://201411272918:1;authenticate=false;encrypt=false;master=false";
+		//String url = "btspp://201411272918:1;authenticate=false;encrypt=false;master=false";	// HC06
+		String url = "btspp://98D331FD1F5B:1;authenticate=false;encrypt=false;master=false";	// Robot
 		try {
 			return new Bluetooth(url);
 		} catch (IOException e) {

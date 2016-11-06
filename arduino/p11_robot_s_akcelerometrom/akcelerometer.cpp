@@ -119,6 +119,7 @@ void zapniAkcelerometer() {
   Serial.println("Nastavujem akcelerometer.");
   akcelerometer.begin();
   akcelerometer.setRange(ADXL345_RANGE_16_G);
+  //akcelerometer.setDataRate(ADXL345_DATARATE_12_5_HZ);
   Serial.println("Akcelerometer zapnuty."); 
  
   zobrazNastavenieAkcelerometra();
