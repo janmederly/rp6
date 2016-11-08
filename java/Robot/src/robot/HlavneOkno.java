@@ -74,7 +74,7 @@ public class HlavneOkno {
 		
 		JButton btnNewButton = new JButton("STOP");
 		btnNewButton.setToolTipText("zastavit robota");
-		btnNewButton.setBounds(845, 522, 78, 44);
+		btnNewButton.setBounds(835, 501, 78, 44);
 		btnNewButton.setBackground(Color.RED);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -86,7 +86,7 @@ public class HlavneOkno {
 		
 		JButton btnVl = new JButton("vl");
 		btnVl.setToolTipText("vlavo");
-		btnVl.setBounds(786, 522, 64, 44);
+		btnVl.setBounds(761, 501, 64, 44);
 		btnVl.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				bluetooth.posli("B");
@@ -102,7 +102,7 @@ public class HlavneOkno {
 			}
 		});
 		btnVp.setToolTipText("vpravo");
-		btnVp.setBounds(919, 522, 64, 44);
+		btnVp.setBounds(923, 501, 64, 44);
 		btnVp.setBackground(Color.YELLOW);
 		frmOvladacRobota.getContentPane().add(btnVp);
 		
@@ -113,7 +113,7 @@ public class HlavneOkno {
 			}
 		});
 		btnDz.setToolTipText("dozadu");
-		btnDz.setBounds(854, 566, 64, 44);
+		btnDz.setBounds(845, 556, 64, 44);
 		btnDz.setBackground(Color.YELLOW);
 		frmOvladacRobota.getContentPane().add(btnDz);
 		
@@ -124,27 +124,9 @@ public class HlavneOkno {
 			}
 		});
 		btnDp.setToolTipText("dopredu");
-		btnDp.setBounds(854, 477, 64, 44);
+		btnDp.setBounds(845, 446, 64, 44);
 		btnDp.setBackground(Color.YELLOW);
 		frmOvladacRobota.getContentPane().add(btnDp);
-		
-	    JButton btnNewButton_1 = new JButton("90\u00B0 dolava");
-	    btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				bluetooth.posli("1");
-			}
-		});
-	    btnNewButton_1.setBounds(774, 443, 107, 23);
-	    frmOvladacRobota.getContentPane().add(btnNewButton_1);
-	    
-	    JButton btnDoprava = new JButton("90\u00B0 doprava");
-	    btnDoprava.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				bluetooth.posli("2");
-			}
-		});
-	    btnDoprava.setBounds(886, 443, 107, 23);
-	    frmOvladacRobota.getContentPane().add(btnDoprava);
 		
 		textVzdialenost = new JTextField();
 		textVzdialenost.setBounds(176, 577, 599, 23);

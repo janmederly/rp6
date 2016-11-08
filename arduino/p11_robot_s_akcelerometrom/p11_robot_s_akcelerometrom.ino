@@ -106,8 +106,8 @@ float akcelerometerX = 0;               // zrýchlenie v osiach X, Y, Z
 float akcelerometerY = 0;
 float akcelerometerZ = 0;
 
-float airbagDZ = 5;                     //nastavenie najnizsej hodnoty pre airbagy pri smere dozadu
-float airbagDO = -5;                    //nastavenie najnizsej hodnoty pre airbagy pri smere dopredu
+float airbagDZ = 8;                     //nastavenie najnizsej hodnoty pre airbagy pri smere dozadu
+float airbagDO = -8;                    //nastavenie najnizsej hodnoty pre airbagy pri smere dopredu
 long vypnutAirbag = 0;
 
 
